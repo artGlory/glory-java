@@ -1,11 +1,13 @@
 package com.glory.gloryStorageMysql.controller;
 
 
+import com.glory.gloryStorageMysql.constants.Route;
 import com.glory.gloryUtils.anno.NoNeedLogin;
 import com.glory.gloryUtils.utils.HttpUtil;
 import com.glory.gloryUtils.utils.MonipdbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class MainController {
 
-    @GetMapping("/")
+    @GetMapping(Route.main)
     @NoNeedLogin
     public String star(HttpServletRequest request) {
         String ip = HttpUtil.getRemoteAddr(request);

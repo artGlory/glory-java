@@ -1,8 +1,8 @@
 package com.glory.gloryControllerEntrance.main;
 
 
+import com.glory.gloryControllerEntrance.constants.Route;
 import com.glory.gloryUtils.anno.NoNeedLogin;
-import com.glory.gloryUtils.constants.Route;
 import com.glory.gloryUtils.utils.HttpUtil;
 import com.glory.gloryUtils.utils.MonipdbUtils;
 import lombok.extern.slf4j.Slf4j;

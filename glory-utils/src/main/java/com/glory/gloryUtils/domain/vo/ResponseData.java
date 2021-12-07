@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseDate<T> implements Serializable {
+public class ResponseData<T> implements Serializable {
     private static final long serialVersionUID = 4177313172779343309L;
     /**
      *responseUUID

@@ -1,15 +1,14 @@
 package com.glory.gloryControllerEntrance.handle;
 
 import com.glory.gloryUtils.constants.SysConstants;
+import com.glory.gloryUtils.domain.vo.ResponseData;
 import com.glory.gloryUtils.exception.ServiceException;
 import com.glory.gloryUtils.utils.PrintUtil;
-import com.glory.gloryUtils.domain.vo.ResponseDate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,7 +31,7 @@ public class GlobalExceptionHandler {
     private boolean isShowThrowableStackTrace;
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseDate<String> handleIllegalArgumentException(HttpServletRequest request
+    public ResponseData<String> handleIllegalArgumentException(HttpServletRequest request
             , HttpServletResponse response, IllegalArgumentException e) {
         String requestUuid = request.getAttribute(SysConstants.http_request_uuid).toString();
         response.setHeader(SysConstants.success_response, "false");
@@ -42,7 +41,7 @@ public class GlobalExceptionHandler {
         } else if (isShowIllegalArgumentExceptionMessge) {
             log.error(requestUuid + " " + PrintUtil.getMessge(e));
         }
-        return ResponseDate.<String>builder()
+        return ResponseData.<String>builder()
                 .success(false)
                 .message(e.getMessage())
                 .responseUUID(requestUuid)
@@ -50,7 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ServiceException.class)
-    public ResponseDate<String> handleServiceException(HttpServletRequest request
+    public ResponseData<String> handleServiceException(HttpServletRequest request
             , HttpServletResponse response, ServiceException e) {
         String requestUuid = request.getAttribute(SysConstants.http_request_uuid).toString();
         response.setHeader(SysConstants.success_response, "false");
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
         } else if (isShowServiceExceptionMessge) {
             log.error(requestUuid + " " + PrintUtil.getMessge(e));
         }
-        return ResponseDate.<String>builder()
+        return ResponseData.<String>builder()
                 .success(false)
                 .message(e.getMessage())
                 .responseUUID(requestUuid)
@@ -68,7 +67,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {Throwable.class})
-    public ResponseDate<String> handleThrowableException(HttpServletRequest request
+    public ResponseData<String> handleThrowableException(HttpServletRequest request
             , HttpServletResponse response, Throwable t) {
         String requestUuid = request.getAttribute(SysConstants.http_request_uuid).toString();
         response.setHeader(SysConstants.success_response, "false");
@@ -78,7 +77,7 @@ public class GlobalExceptionHandler {
         } else if (isShowThrowableMessge) {
             log.error(requestUuid + " " + PrintUtil.getMessge(t));
         }
-        return ResponseDate.<String>builder()
+        return ResponseData.<String>builder()
                 .success(false)
                 .responseUUID(requestUuid)
                 .message(t.getMessage())

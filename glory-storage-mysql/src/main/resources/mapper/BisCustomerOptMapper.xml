@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.glory.gloryStorageMysql.dao.BisCustomerOptMapper">
+  <resultMap id="BaseResultMap" type="com.glory.gloryStorageMysql.entity.BisCustomerOpt">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OptID" jdbcType="INTEGER" property="optid" />
+    <result column="FtyEnterpriseID" jdbcType="INTEGER" property="ftyenterpriseid" />
+    <result column="FtyStoreID" jdbcType="BIGINT" property="ftystoreid" />
+    <result column="EnterpriseID" jdbcType="INTEGER" property="enterpriseid" />
+    <result column="CustomerID" jdbcType="INTEGER" property="customerid" />
+    <result column="OptEnterpriseType" jdbcType="VARCHAR" property="optenterprisetype" />
+    <result column="ChangeType" jdbcType="INTEGER" property="changetype" />
+    <result column="ChangeReason" jdbcType="INTEGER" property="changereason" />
+    <result column="Status" jdbcType="VARCHAR" property="status" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CreateDateTime" jdbcType="TIMESTAMP" property="createdatetime" />
+    <result column="CreateEmployeeID" jdbcType="INTEGER" property="createemployeeid" />
+    <result column="CreateUserID" jdbcType="INTEGER" property="createuserid" />
+    <result column="CreateUserName" jdbcType="VARCHAR" property="createusername" />
+    <result column="SourcesType" jdbcType="VARCHAR" property="sourcestype" />
+    <result column="CurrentUnitID" jdbcType="INTEGER" property="currentunitid" />
+    <result column="RepeatCustomerID" jdbcType="INTEGER" property="repeatcustomerid" />
+    <result column="CheckDateTime" jdbcType="TIMESTAMP" property="checkdatetime" />
+    <result column="CheckEmployeeID" jdbcType="INTEGER" property="checkemployeeid" />
+    <result column="CheckEmployeeName" jdbcType="VARCHAR" property="checkemployeename" />
+    <result column="CheckUserID" jdbcType="INTEGER" property="checkuserid" />
+    <result column="CheckUserName" jdbcType="VARCHAR" property="checkusername" />
+    <result column="CheckRemark" jdbcType="VARCHAR" property="checkremark" />
+  </resultMap>
+</mapper>

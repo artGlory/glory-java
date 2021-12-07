@@ -7,7 +7,7 @@ package com.glory.gloryControllerEntrance.interceptor;//package com.glory.gloryC
 //import com.spring.webadmin.anno.NoNeedLogin;
 //import com.spring.webadmin.anno.NoValidPrivilege;
 //import com.spring.webadmin.constant.CommonConstants;
-//import com.spring.webadmin.domain.vo.ResponseDate;
+//import com.spring.webadmin.domain.vo.ResponseData;
 //import com.spring.webadmin.module.adminPrivilege.tools.PrivilegeTool;
 //import com.spring.webadmin.module.adminUser.domain.AdminInfoDTO;
 //import com.spring.webadmin.module.adminUser.tools.AdminTool;
@@ -123,7 +123,7 @@ package com.glory.gloryControllerEntrance.interceptor;//package com.glory.gloryC
 //        httpServletResponse.setCharacterEncoding("UTF-8");
 //        httpServletResponse.setContentType("application/json;charset=UTF-8");
 //        PrintWriter pw = httpServletResponse.getWriter();
-//        pw.write(new ObjectMapper().writeValueAsString(ResponseDate.builder().success(false).message(errMessage).build()));
+//        pw.write(new ObjectMapper().writeValueAsString(ResponseData.builder().success(false).message(errMessage).build()));
 //        pw.flush();
 //        pw.close();
 //    }
