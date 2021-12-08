@@ -6,7 +6,6 @@ import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -20,7 +19,7 @@ import java.sql.SQLException;
 @Data
 @Slf4j
 @Configuration
-@PropertySource(value = "classpath:application-storage-mysql.properties")
+@PropertySource(value = "classpath:application-mysql.properties")
 @ConfigurationProperties(prefix = "spring.datasource")
 public class DataSourceConfig {
 

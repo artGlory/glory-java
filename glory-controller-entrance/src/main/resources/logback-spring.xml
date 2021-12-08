@@ -13,7 +13,7 @@
     <!--logger：日志所处的包-->
     <!--level：日志打印级别-->
     <logger name="com.glory" level="INFO"/>
-    <!--<logger name="org.apache.activemq" level="INFO"/>-->
+<!--    <logger name="org.springframework.web" level="TRACE"/>-->
     <!--<logger name="org.apache.zookeeper" level="INFO"/>-->
     <!--com.alibaba.dubbo是dubbo服务的包，在如何是info一下的级别会产生大量的启动日志，调成WARN减少日志输出-->
     <!--<logger name="com.alibaba.dubbo" level="WARN"/>-->

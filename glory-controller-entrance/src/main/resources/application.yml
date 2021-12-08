@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: glory-common-controller
-  profiles:
-    active: dev,utils
-#    active: test
-#    active: prod

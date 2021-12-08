@@ -22,7 +22,7 @@ public class FilterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean_2() {
+    public FilterRegistrationBean filterRegistrationBean20() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(xssFilter());
         filterRegistrationBean.addUrlPatterns("/*");
@@ -31,7 +31,7 @@ public class FilterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean_3() {
+    public FilterRegistrationBean filterRegistrationBean30() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(uuidFilter());
         filterRegistrationBean.addUrlPatterns("/*");
