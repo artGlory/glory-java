@@ -1,8 +1,10 @@
 package com.glory.gloryCacheRedis.config;
 
+import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glory.gloryCacheRedis.cache.pubSub.channelSub.TestCacheSub;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,8 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -45,9 +49,6 @@ public class LettuceRedisConfig {
     // 连接池最大连接数（使用负值表示没有限制）
     @Value("${spring.redis.lettuce.pool.max-active}")
     private Integer maxTotal;
-    // 连接池最大阻塞等待时间（使用负值表示没有限制）
-    @Value("${spring.redis.lettuce.pool.max-wait}")
-    private Integer maxWait;
     // 连接池中的最大空闲连接
     @Value("${spring.redis.lettuce.pool.max-idle}")
     private Integer maxIdle;
@@ -68,7 +69,6 @@ public class LettuceRedisConfig {
     public LettucePoolingClientConfiguration lettucePoolingClientConfiguration() {
         GenericObjectPoolConfig config = new GenericObjectPoolConfig();
         config.setMaxTotal(maxTotal);
-        config.setMaxWaitMillis(maxWait);
         config.setMaxIdle(maxIdle);
         config.setMinIdle(minIdle);
         LettucePoolingClientConfiguration pool = LettucePoolingClientConfiguration.builder()
@@ -93,7 +93,7 @@ public class LettuceRedisConfig {
         configuration.setDatabase(database);
         configuration.setPassword(RedisPassword.of(password));
         //哨兵模式
-        //RedisSentinelConfiguration configuration1 = new RedisSentinelConfiguration();
+//        RedisSentinelConfiguration configuration1 = new RedisSentinelConfiguration();
         //集群模式
         //RedisClusterConfiguration configuration2 = new RedisClusterConfiguration();
         LettuceConnectionFactory factory = new LettuceConnectionFactory(configuration, lettucePoolingClientConfiguration());
@@ -101,6 +101,26 @@ public class LettuceRedisConfig {
         return factory;
     }
 
+    /**
+     * 序列发的方式
+     * //redis-long会自动转化为int,直接转换为long会异常
+     *
+     * @return
+     */
+    private Jackson2JsonRedisSerializer<Object> getJackson2JsonRedisSerializer() {
+        //以下代码为将RedisTemplate的Value序列化方式由JdkSerializationRedisSerializer更换为Jackson2JsonRedisSerializer
+        //此种序列化方式结果清晰、容易阅读、存储字节少、速度快，所以推荐更换
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+        return jackson2JsonRedisSerializer;
+    }
+
+    private GenericFastJsonRedisSerializer getGenericFastJsonRedisSerializer() {
+        return new GenericFastJsonRedisSerializer();
+    }
 
     /**
      * 获取缓存操作助手对象
@@ -112,21 +132,28 @@ public class LettuceRedisConfig {
         //创建Redis缓存操作助手RedisTemplate对象
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
-        //以下代码为将RedisTemplate的Value序列化方式由JdkSerializationRedisSerializer更换为Jackson2JsonRedisSerializer
-        //此种序列化方式结果清晰、容易阅读、存储字节少、速度快，所以推荐更换
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setKeySerializer(new StringRedisSerializer());//RedisTemplate对象需要指明Key序列化方式，如果声明StringRedisTemplate对象则不需要
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.setValueSerializer(getGenericFastJsonRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
-        //template.setEnableTransactionSupport(true);//是否启用事务
+        template.setHashValueSerializer(getGenericFastJsonRedisSerializer());
+        template.setEnableTransactionSupport(true);//是否启用事务
         template.afterPropertiesSet();
         return template;
     }
 
+    @Bean
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setTopicSerializer(new StringRedisSerializer());
+/*
+频道订阅
+ */
+//        container.addMessageListener(new TestPubSubCache(), TestPubSubCache.topicList);
+        container.addMessageListener(new TestCacheSub(),new ChannelTopic("channel-test"));
+
+
+        return container;
+    }
 
 }

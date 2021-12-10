@@ -86,6 +86,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/opencv-3415.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.25.0-GA</version>
+        </dependency>
     </dependencies>
 
     <build>

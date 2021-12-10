@@ -47,6 +47,17 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.49</version>
+        </dependency>
+        <dependency>
+            <groupId>com.glory</groupId>
+            <artifactId>glory-utils</artifactId>
+            <version>1.0.0</version>
+
+        </dependency>
     </dependencies>
 
     <build>

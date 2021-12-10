@@ -1,7 +1,10 @@
-package com.glory.gloryCacheRedis.cache;
+package com.glory.gloryCacheRedis.cache.database;
 
+import com.glory.gloryCacheRedis.cache.CacheConfigInterface;
+import com.glory.gloryCacheRedis.constants.CachePrefix;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,21 +15,49 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-@Component
+@Component(value = "databaseCacheTemplate")
 @Slf4j
 @PropertySource(value = "classpath:application-redis.properties")
-public class CacheUtil {
+@ConfigurationProperties(prefix = "spring.redis.cache.database")
+public class RedisDatabaseCacheTemplate implements DatabaseCacheTemplate, CacheConfigInterface {
 
-    @Value("${spring.redis.cache.default.expire.seconds:3600}")
-    private Long defaultExpireSeconds;
     @Value("${spring.redis.cache.enable:false}")
-    private Boolean isRedisEnable;
+    private boolean mainEnable;
+    @Value("${spring.redis.cache.expireMax:60}")
+    private long expireMax;
+    private boolean enable;
+    private long expire;
 
     @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate redisTemplate;
 
-    private String getKey(final String namespace, final String key) {
-        return namespace + "." + key;
+    @Override
+    public String generateKey(String... key) {
+        String result = getKeyPrefix() + ".";
+        for (String k : key) {
+            result += k + ".";
+        }
+        return result.substring(0, result.length());
+    }
+
+
+    @Override
+    public long getTimeExpire(Long time) {
+        long result = expire;
+        if (time != null)
+            result = time;
+        result = expire > expireMax ? expireMax : expire;
+        return result;
+    }
+
+    @Override
+    public String getKeyPrefix() {
+        return CachePrefix.Database.getPrifix();
+    }
+
+    @Override
+    public boolean isEnableCache() {
+        return mainEnable && enable;
     }
 
     /**
@@ -39,7 +70,7 @@ public class CacheUtil {
      */
     public <T> T get(final String namespace, final String key, CacheCallback<T> callback) {
 
-        return get(namespace, key, defaultExpireSeconds, callback);
+        return get(namespace, key, expire, callback);
     }
 
     /**
@@ -53,10 +84,10 @@ public class CacheUtil {
     public <T> T get(final String namespace, final String key, final long expireSeconds, CacheCallback<T> callback) {
         T t = null;
         try {
-            if (!isRedisEnable)
+            if (!isEnableCache())
                 return callback.getObject();//缓存未开启
 
-            Object objectTemp = redisTemplate.opsForValue().get(getKey(namespace, key));
+            Object objectTemp = redisTemplate.opsForValue().get(generateKey(namespace, key));
             if (objectTemp != null) {
                 t = (T) objectTemp;
             } else {
@@ -64,7 +95,7 @@ public class CacheUtil {
                 else {
                     t = callback.getObject();
                     if (t != null) {
-                        redisTemplate.opsForValue().set(getKey(namespace, key), t, expireSeconds, TimeUnit.SECONDS);
+                        redisTemplate.opsForValue().set(generateKey(namespace, key), t, getTimeExpire(expireSeconds), TimeUnit.SECONDS);
                     }
                 }
             }
@@ -80,7 +111,7 @@ public class CacheUtil {
     }
 
     public <T> List<T> getList(final String namespace, final String key, CacheCallback<T> callback) {
-        return getList(namespace, key, defaultExpireSeconds, callback);
+        return getList(namespace, key, expire, callback);
     }
 
     /**
@@ -96,17 +127,17 @@ public class CacheUtil {
     public <T> List<T> getList(final String namespace, final String key, long expireSeconds, CacheCallback<T> callback) {
         List<T> t = null;
         try {
-            if (!isRedisEnable)
+            if (!isEnableCache())
                 return callback.getObjectList();
 
-            Object objectTemp = redisTemplate.opsForValue().get(getKey(namespace, key));
+            Object objectTemp = redisTemplate.opsForValue().get(generateKey(namespace, key));
             if (objectTemp == null && callback == null) {
                 return null;
             }
             if (objectTemp == null) {
                 t = callback.getObjectList();
                 if (t != null) {
-                    redisTemplate.opsForValue().set(getKey(namespace, key), t, expireSeconds, TimeUnit.SECONDS);
+                    redisTemplate.opsForValue().set(generateKey(namespace, key), t, getTimeExpire(expireSeconds), TimeUnit.SECONDS);
                 }
             } else {
                 t = (List<T>) objectTemp;
@@ -127,25 +158,25 @@ public class CacheUtil {
      * 设置缓存
      */
     public void setCache(String namespace, String key, Object t, long expireSeconds) {
-        if (!isRedisEnable) return;
+        if (!isEnableCache()) return;
 
-        redisTemplate.opsForValue().set(getKey(namespace, key), t, expireSeconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(generateKey(namespace, key), t, expireSeconds, TimeUnit.SECONDS);
     }
 
     /**
      * 设置缓存
      */
     public void setCache(String namespace, String key, Object t) {
-        setCache(namespace, key, t, defaultExpireSeconds);
+        setCache(namespace, key, t, expire);
     }
 
     /**
      * 获取缓存
      */
     public Object getCache(String namespace, String key) {
-        if (!isRedisEnable) return null;
+        if (!isEnableCache()) return null;
 
-        Object objectTemp = redisTemplate.opsForValue().get(getKey(namespace, key));
+        Object objectTemp = redisTemplate.opsForValue().get(generateKey(namespace, key));
         return objectTemp;
     }
 
@@ -157,12 +188,12 @@ public class CacheUtil {
      * @return 移除状态
      */
     public boolean remove(final String namespace, final String... key) {
-        if (!isRedisEnable) return true;
+        if (!isEnableCache()) return true;
 
         boolean flag = false;
         List<String> keyList = new ArrayList<>();
         for (String k : key) {
-            keyList.add(getKey(namespace, k));
+            keyList.add(generateKey(namespace, k));
         }
         try {
             redisTemplate.delete(keyList);
@@ -180,11 +211,11 @@ public class CacheUtil {
      * @return 清除状态
      */
     public boolean cleanSpace(final String namespace) {
-        if (!isRedisEnable) return true;
+        if (!isEnableCache()) return true;
 
         boolean flag = false;
         try {
-            Set<String> keys = redisTemplate.keys(getKey(namespace, "*"));
+            Set<String> keys = redisTemplate.keys(generateKey(namespace, "*"));
             redisTemplate.delete(keys);
             flag = true;
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.glory.gloryCacheRedis.cache;
+package com.glory.gloryCacheRedis.cache.database;
 
 import java.util.List;
 
