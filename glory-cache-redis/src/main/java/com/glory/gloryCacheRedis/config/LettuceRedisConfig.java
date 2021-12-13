@@ -16,7 +16,6 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -149,9 +148,7 @@ public class LettuceRedisConfig {
 /*
 频道订阅
  */
-//        container.addMessageListener(new TestPubSubCache(), TestPubSubCache.topicList);
-        container.addMessageListener(new TestCacheSub(),new ChannelTopic("channel-test"));
-
+        container.addMessageListener(new TestCacheSub(), TestCacheSub.topicList);
 
         return container;
     }

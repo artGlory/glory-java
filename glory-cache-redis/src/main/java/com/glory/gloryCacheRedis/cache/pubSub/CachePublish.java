@@ -5,6 +5,7 @@ import com.glory.gloryUtils.utils.ByteUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,12 +20,9 @@ public class CachePublish {
      * @param channel
      * @param message
      */
-    public void pubMessage(String channel, Object message) {
+    public void pubMessage(String channel, String message) {
         System.err.println("发布--" + channel);
         System.err.println("发布--" + message);
-        byte[] bytes = new GenericFastJsonRedisSerializer().serialize(message);
-        System.err.println("发布--" + ByteUtil.bytesToHex(bytes));
-        redisTemplate.convertAndSend(channel, new String(bytes));
-        System.err.println("发布--" + ByteUtil.bytesToHex(new String(bytes).getBytes()));
+        redisTemplate.convertAndSend(channel, message);
     }
 }
