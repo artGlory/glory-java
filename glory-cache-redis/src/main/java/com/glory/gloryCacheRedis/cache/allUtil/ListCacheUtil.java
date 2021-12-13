@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class ListCacheUtil {
+public class ListCacheUtil extends CommonCacheUtil {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;

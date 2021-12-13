@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 @Component
-public class SetCacheUtil {
+public class SetCacheUtil extends CommonCacheUtil {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;

@@ -9,10 +9,10 @@
         <relativePath>../glory-depend-springboot/pom.xml</relativePath>
     </parent>
     <groupId>com.glory</groupId>
-    <artifactId>glory-cache-redis</artifactId>
+    <artifactId>glory-job</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>glory-cache-redis</name>
-    <description>redis工具</description>
+    <name>glory-job</name>
+    <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -21,26 +21,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-        <!--springboot-redis-letture连接池-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <!-- lettuce pool 缓存连接池 -->
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <!--json转换 https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,14 +32,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.49</version>
-        </dependency>
-        <dependency>
             <groupId>com.glory</groupId>
             <artifactId>glory-utils</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.glory</groupId>
+            <artifactId>glory-cache-redis</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -64,6 +48,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

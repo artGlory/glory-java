@@ -2,7 +2,9 @@ package com.glory.gloryCacheRedis.constants;
 
 public enum CachePrefix {
 
-    Database("database", "数据库");
+    Database("database", "数据库"),
+    CacheLock("cacheLock", "缓存锁"),
+    ;
     private String prifix;
     private String desc;
 

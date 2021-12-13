@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * 缓存操作接口.
  */
 @Component
-public class StringCacheUtil {
+public class StringCacheUtil extends CommonCacheUtil {
 
 
     @Autowired
@@ -85,6 +85,7 @@ public class StringCacheUtil {
     public void setEx(String key, String value, long timeout) {
         redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
     }
+
     /**
      * Redis Setnx（SET if Not eXists） 命令在指定的 key 不存在时，为 key 设置指定的值。
      *

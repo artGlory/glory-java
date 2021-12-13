@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 @Component
-public class HashCacheUtil {
+public class HashCacheUtil extends CommonCacheUtil{
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
