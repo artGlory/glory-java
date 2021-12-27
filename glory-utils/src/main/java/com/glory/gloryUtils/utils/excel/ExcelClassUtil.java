@@ -25,15 +25,15 @@ public class ExcelClassUtil {
 
     static {
         excel_properties = new Properties();
-        excel_properties.put("workbook.outType", "xls");//导出文件类型; xls ,xlsx
+        excel_properties.put("workbook.outType", "xlsx");//导出文件类型; xls ,xlsx
         excel_properties.put("workbook.sheet.rowSize", 5000);//单个sheet最大多少条数据
     }
 
     public static void main(String[] args) {
-        int flag = 1;//1导出；2导入
+        int flag = 2;//1导出；2导入
         if (flag == 1) {
             List<TestBean> testBeanList = new ArrayList<>();
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 10; i++) {
                 testBeanList.add(TestBean.builder()
                         .group("组" + i)
                         .cloumn("列")
@@ -44,104 +44,69 @@ public class ExcelClassUtil {
                         .url("https://poi.apache.org/")
                         .build());
             }
-            String outFilePath = PathUtil.getRandomDesktopFilePath(".xls");
+            String outFilePath = PathUtil.getRandomDesktopFilePath(".xlsx");
             try {
                 exportToStream(TestBean.class, testBeanList, null, null, new FileOutputStream(outFilePath));
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (flag == 2) {
-            String fileName = PathUtil.getDesktopPathAndSeparatorChar() + "6370ec9a-a8b8-477c-adaa-5e81efc98ed2.xls";
-            fileName = PathUtil.getDesktopPathAndSeparatorChar() + "asdf1.xlsx";
 
-            Map<String, Map<Integer, Map<Integer, Object>>> resultMap = null;
+            String fileName = PathUtil.getDesktopPathAndSeparatorChar() + "6370ec9a-a8b8-477c-adaa-5e81efc98ed2.xls";
+            fileName = PathUtil.getDesktopPathAndSeparatorChar() + "b5c7b649-7314-448e-a924-22fc4f27962a.xlsx";
+
+            List<List<Cell>> listList = null;
             try {
-                resultMap = importFromStream(new FileInputStream(fileName), 0, 7);
-            } catch (FileNotFoundException e) {
+                listList = importFromStream2List(new FileInputStream(fileName), 2, 6);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            for (String sheetName : resultMap.keySet()) {
-                Map<Integer, Map<Integer, Object>> sheetDataMap = resultMap.get(sheetName);
-                for (Integer row : sheetDataMap.keySet()) {
-                    Map<Integer, Object> rowData = sheetDataMap.get(row);
-                    for (Integer col : rowData.keySet()) {
-                        Object data = rowData.get(col);
-                        if (data != null)
-                            System.err.println(data.getClass() + " " + data);
-                    }
-                    System.err.println();
+            for (List<Cell> cellList : listList) {
+                for (Cell cell : cellList) {
+                    System.err.println(cell.getCellType() + " " + cell);
+//                    System.err.println(cell);
                 }
-                System.err.println(resultMap);
             }
         }
     }
 
     /**
-     *
      * @param inputStream
-     * @param headRowNum
-     * @param colNum
-     * @return    Map<sheetName, Map<行, Map<列, Object>>>
-     */
-    public static Map<String, Map<Integer, Map<Integer, Object>>> importFromStream(InputStream inputStream, int headRowNum, int colNum) {
-        Map<String, Map<Integer, Map<Integer, Object>>> resultMap = new HashMap<>();
+     * @param headRowNum  表头行数 1.2.3.4...
+     * @param colNum      总列数  1.2.3.4...
+     * @return Map<sheetName, Map < 行, Map < 列, Cell>>>
+     * @Description
+     * @Param [inputStream, headRowNum, colNum]
+     * @Author hyy
+     * @Date 2021-12-27 14:10
+     **/
+    private static Map<String, Map<Integer, Map<Integer, Cell>>> importFromStream2Map(InputStream inputStream, int headRowNum, int colNum) {
+        Map<String, Map<Integer, Map<Integer, Cell>>> resultMap = new HashMap<>();
         /*
         获取workbook
          */
         Workbook workbook = null;
         try {
             workbook = new XSSFWorkbook(inputStream);//2007+
-        } catch (IOException e) {
+        } catch (Exception e) {
             try {
                 workbook = new HSSFWorkbook(inputStream);  //2003-
-            } catch (IOException ex) {
+            } catch (Exception ex) {
             }
         }
         if (workbook == null) throw new IllegalArgumentException("xls文件解析错误 ， xlsx文件解析错误， 请确认文件");
         for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);//获取sheet
-            Map<Integer, Map<Integer, Object>> sheetDataMap = new HashMap<>();
+            Map<Integer, Map<Integer, Cell>> sheetDataMap = new HashMap<>();
             for (int dataRow = headRowNum; dataRow <= sheet.getLastRowNum(); dataRow++) {
                 Row row = sheet.getRow(dataRow);
                 if (row == null) continue;
-                Map<Integer, Object> rowDataMap = new HashMap<>();
+                Map<Integer, Cell> rowDataMap = new HashMap<>();
                 for (int col = 0; col < colNum; col++) {
                     Cell cell = row.getCell(col);
-                    if (cell == null) {
-                        rowDataMap.put(col, null);
-                    } else {
-                        try {
-                            rowDataMap.put(col, cell.getBooleanCellValue());
-                        } catch (Exception a) {
-                            try {
-                                rowDataMap.put(col, cell.getLocalDateTimeCellValue());
-                            } catch (Exception b) {
-                                try {
-                                    rowDataMap.put(col, cell.getDateCellValue());
-                                } catch (Exception c) {
-                                    try {
-                                        rowDataMap.put(col, cell.getNumericCellValue());
-                                    } catch (Exception d) {
-                                        try {
-                                            rowDataMap.put(col, cell.getStringCellValue());
-                                        } catch (Exception e) {
-                                            try {
-                                                rowDataMap.put(col, cell.getRichStringCellValue());
-                                            } catch (Exception f) {
-                                                try {
-                                                    rowDataMap.put(col, cell.getErrorCellValue());
-                                                } catch (Exception g) {
-                                                    throw new IllegalArgumentException("not know type");
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    rowDataMap.put(col, cell);
+                    sheetDataMap.put(dataRow, rowDataMap);
                 }
-                sheetDataMap.put(dataRow, rowDataMap);
             }
             resultMap.put(sheet.getSheetName(), sheetDataMap);
         }
@@ -149,6 +114,40 @@ public class ExcelClassUtil {
     }
 
     /**
+     * @param headRowNum 表头行数
+     * @param colNum     列行数
+     * @return java.util.List<java.util.List < org.apache.poi.ss.usermodel.Cell>>
+     * @Description
+     * @Param [inputStream, headRowNum, colNum]
+     * @Author hyy
+     * @Date 2021-12-27 11:57
+     **/
+    public static List<List<Cell>> importFromStream2List(InputStream inputStream, int headRowNum, int colNum) {
+        Map<String, Map<Integer, Map<Integer, Cell>>> resultMap = importFromStream2Map(inputStream, headRowNum, colNum);
+        List<List<Cell>> listList = new LinkedList<>();
+        for (String sheetName : resultMap.keySet()) {
+            Map<Integer, Map<Integer, Cell>> sheetMap = resultMap.get(sheetName);
+            for (Integer rowNum : sheetMap.keySet()) {
+                Map<Integer, Cell> rowMap = new TreeMap<>(new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer o1, Integer o2) {
+                        return o1 - o2;
+                    }
+                });
+                rowMap.putAll(sheetMap.get(rowNum));
+                List<Cell> cellList = new ArrayList<>();
+                for (Integer col : rowMap.keySet()) {
+                    Cell cell = rowMap.get(col);
+                    cellList.add(cell);
+                }
+                listList.add(cellList);
+            }
+        }
+        return listList;
+    }
+
+    /**
+     * @param groupNums 显示特定组；groupNums={1,2}显示1组和2组；groupNums=null显示所有组
      * @return void
      * @Description 导出到流
      * @Param [glass, list, groupNums, sheetName, outputStream]
@@ -429,39 +428,6 @@ public class ExcelClassUtil {
 
     /**
      * @return void
-     * @Description 导出到流
-     * @Param [glass, list, groupNums, outputStream]
-     * @Author hyy
-     * @Date 2021/7/7 16:14
-     **/
-    public static void exportToStream(Class glass, List list, Integer[] groupNums, OutputStream outputStream) {
-        exportToStream(glass, list, groupNums, null, outputStream);
-    }
-
-    /**
-     * @return void
-     * @Description 导出到流
-     * @Param [glass, list, outputStream]
-     * @Author hyy
-     * @Date 2021/7/7 16:14
-     **/
-    public static void exportToStream(Class glass, List list, OutputStream outputStream) {
-        exportToStream(glass, list, null, null, outputStream);
-    }
-
-    /**
-     * @return void
-     * @Description 导出到流
-     * @Param [glass, list, sheetName, outputStream]
-     * @Author hyy
-     * @Date 2021/7/7 16:14
-     **/
-    public static void exportToStream(Class glass, List list, String sheetName, OutputStream outputStream) {
-        exportToStream(glass, list, null, sheetName, outputStream);
-    }
-
-    /**
-     * @return void
      * @Description 导出到web
      * @Param [httpServletResponse, filename, glass, list, groupNums, sheetName]
      * @Author hyy
@@ -482,43 +448,6 @@ public class ExcelClassUtil {
             throw new IllegalArgumentException("》》》导出文件失败《《《" + e.getMessage());
         }
     }
-
-    /**
-     * @return void
-     * @Description 导出到web
-     * @Param [httpServletResponse, filename, glass, list, sheetName]
-     * @Author hyy
-     * @Date 2021/7/7 16:13
-     **/
-    public static void exportToWeb(HttpServletResponse httpServletResponse, String filename,
-                                   Class glass, List list, String sheetName) throws IllegalArgumentException {
-        exportToWeb(httpServletResponse, filename, glass, list, null, sheetName);
-    }
-
-    /**
-     * @return void
-     * @Description 导出到web
-     * @Param [httpServletResponse, filename, glass, list]
-     * @Author hyy
-     * @Date 2021/7/7 16:14
-     **/
-    public static void exportToWeb(HttpServletResponse httpServletResponse, String filename,
-                                   Class glass, List list) throws IllegalArgumentException {
-        exportToWeb(httpServletResponse, filename, glass, list, null, null);
-    }
-
-    /**
-     * @return void
-     * @Description 导出到web
-     * @Param [httpServletResponse, filename, glass, list, groupNums]
-     * @Author hyy
-     * @Date 2021/7/7 16:14
-     **/
-    public static void exportToWeb(HttpServletResponse httpServletResponse, String filename,
-                                   Class glass, List list, Integer[] groupNums) throws IllegalArgumentException {
-        exportToWeb(httpServletResponse, filename, glass, list, groupNums, null);
-    }
-
 
     /**
      * @param str N:否；Y:是；n:否；y:是；

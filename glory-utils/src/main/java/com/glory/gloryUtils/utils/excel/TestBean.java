@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 @Data
@@ -34,4 +36,10 @@ public class TestBean {
     private String url;
 
 
+    public static void main(String[] args) {
+        Field[] fields=TestBean.class.getDeclaredFields();
+        for (Field field:fields){
+            System.err.println(field.getType());
+        }
+    }
 }

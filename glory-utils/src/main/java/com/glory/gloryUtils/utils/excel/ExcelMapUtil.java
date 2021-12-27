@@ -3,7 +3,6 @@ package com.glory.gloryUtils.utils.excel;
 import com.glory.gloryUtils.utils.PathUtil;
 import com.glory.gloryUtils.utils.excel.poi.PoiExcelUtil;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,17 +22,16 @@ import java.util.Map;
  * @Date 2021/7/8 15:53
  **/
 @Data
-@NoArgsConstructor
 public class ExcelMapUtil {
     /**
      * 表头
      * [
-     *第一行[
-     *    [列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]，[列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]
-     *    ]
-     *第二行,[
-     *    [列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]，[列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]
-     *    ]
+     * 第一行[
+     * [列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]，[列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]
+     * ]
+     * 第二行,[
+     * [列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]，[列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]
+     * ]
      * ]
      */
     private List<List<Object[]>> headerInfoList = new ArrayList<List<Object[]>>();
@@ -51,14 +49,17 @@ public class ExcelMapUtil {
      */
     private String sheetName = null;
 
-    public ExcelMapUtil(List<List<Object[]>> headerInfoList, List<Map<String, Object>> dataInfoList) {
-        this(headerInfoList, dataInfoList, null);
-    }
-
-    public ExcelMapUtil(List<List<Object[]>> headerInfoList, List<Map<String, Object>> dataInfoList, List<Integer[]> mergeReginArr) {
-        this(headerInfoList, dataInfoList, mergeReginArr, null);
-    }
-
+    /**
+     * @param headerInfoList headItem [列key，列名称，列宽（对应列宽，多少个字符，默认指30个字符;[0,255] <0 自动列宽）]
+     * @param dataInfoList   据  [{列key,列Object},{列key,列Object}]
+     * @param mergeReginArr  默认值为null  合并区域 [[ firstRow, lastRow, firstCol, lastCol],[ firstRow, lastRow, firstCol, lastCol]]
+     * @param sheetName      默认值为null
+     * @return
+     * @Description
+     * @Param [headerInfoList, dataInfoList, mergeReginArr, sheetName]
+     * @Author hyy
+     * @Date 2021-12-27 15:36
+     **/
     public ExcelMapUtil(List<List<Object[]>> headerInfoList, List<Map<String, Object>> dataInfoList, List<Integer[]> mergeReginArr, String sheetName) {
         this.headerInfoList = headerInfoList;
         this.dataInfoList = dataInfoList;
@@ -67,22 +68,28 @@ public class ExcelMapUtil {
     }
 
     public static void main(String[] args) {
-        ExcelMapUtil excelMapUtil = new ExcelMapUtil();
-        List<Object[]> headerInfoList = new ArrayList<Object[]>();
-        excelMapUtil.getHeaderInfoList().add(headerInfoList);
+        List<List<Object[]>> headerInfoList = new ArrayList<>();
+        List<Map<String, Object>> dataInfoList = new ArrayList<>();
+        List<Integer[]> mergeReginArr = new ArrayList<>();
+
         int colNumber = 10;
+        List<Object[]> headerInfoListRow01 = new ArrayList<Object[]>();
         for (int i = 0; i < colNumber; i++) {
-            headerInfoList.add(new Object[]{"col_" + i, "列_" + i, 30});
+            headerInfoListRow01.add(new Object[]{"col_" + i, "列_" + i, 30});
         }
+        headerInfoList.add(headerInfoListRow01);
+
         for (int row = 0; row < 200; row++) {
             Map<String, Object> dataInfo = new HashMap<>();
             for (int i = 0; i < colNumber; i++) {
                 dataInfo.put("col_" + i, row + " " + i);
             }
-            excelMapUtil.getDataInfoList().add(dataInfo);
+            dataInfoList.add(dataInfo);
         }
+        mergeReginArr.add(new Integer[]{5, 7, 1, 3});
         try {
-            excelMapUtil.exportToStream(new FileOutputStream(PathUtil.getRandomDesktopFilePath(".xls")));
+            new ExcelMapUtil(headerInfoList, dataInfoList, mergeReginArr, null)
+                    .exportToStream(new FileOutputStream(PathUtil.getRandomDesktopFilePath(".xlsx")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

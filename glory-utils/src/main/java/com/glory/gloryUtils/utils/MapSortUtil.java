@@ -7,6 +7,21 @@ import java.util.*;
  */
 public class MapSortUtil {
 
+    public static void main(String[] args) {
+        Random random = new Random();
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 1; i < 30; i++) {
+            int key = random.nextInt(20);
+            int value = random.nextInt(20);
+            map.put(key, value);
+            System.err.println(key + " " + value);
+        }
+        for (Integer key : map.keySet()) {
+            System.err.println(key + " : " + map.get(key));
+        }
+
+    }
+
     /**
      * Integer KEY的比较器
      */
@@ -65,7 +80,6 @@ public class MapSortUtil {
         }
         return sortedMap;
     }
-
 
 
 }

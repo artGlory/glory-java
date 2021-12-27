@@ -56,16 +56,18 @@ public class Sql2JavaBeanUtil {
     }
 
     public static void main(String[] args) {
-        String str = "  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n" +
-                "  `product_code` varchar(60) NOT NULL DEFAULT '' COMMENT '关联的产品编码',\n" +
-                "  `alarm_name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '警告名称',\n" +
-                "  `alarm_code` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '警告编码',\n" +
-                "  `trigger` varchar(5120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '触发器列表',\n" +
-                "  `behavior` varchar(5120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '执行动作列表',\n" +
-                "  `alarm_status` int NOT NULL DEFAULT '0' COMMENT '0：停用；1：启动',\n" +
-                "  `del_flag` int NOT NULL DEFAULT '0',\n" +
-                "  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-                "  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n";
+        String str = " `HadTypeID` int NOT NULL AUTO_INCREMENT COMMENT '硬件分类ID',\n" +
+                "  `EnterpriseID` int NOT NULL COMMENT '企业ID',\n" +
+                "  `HadTypeCode` varchar(45) COLLATE utf8mb4_general_ci NOT NULL COMMENT '硬件类别编码',\n" +
+                "  `HadTypeName` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT '硬件类别名称',\n" +
+                "  `SupervisionCycle` decimal(20,10) NOT NULL COMMENT '监管期',\n" +
+                "  `IsEnabled` char(1) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Y' COMMENT '是否可用',\n" +
+                "  `Remark` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',\n" +
+                "  `CreateUserID` int NOT NULL COMMENT '创建用户ID',\n" +
+                "  `CreateUserName` varchar(45) COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建用户名称',\n" +
+                "  `CreateDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
+                "  `LastUpdateDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',\n" +
+                "  PRIMARY KEY (`HadTypeID`),";
          print2Console(str);
     }
 }

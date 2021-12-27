@@ -8,9 +8,11 @@ import org.springframework.context.annotation.FilterType;
 
 @ComponentScan(basePackages = {"com.glory"}
         , excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX
-        , pattern = {"com.glory.gloryStorageMysql.controller.*"
+        , pattern = {
+        "com.glory.gloryStorageMysql.controller.*"
         , "com.glory.gloryStorageMysql.GloryStorageMysqlApplication"
         , "com.glory.gloryUtils.GloryUtilsApplication"
+        , "com.glory.gloryJob.GloryJobApplication"
 })
 )
 @SpringBootApplication
