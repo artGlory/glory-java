@@ -6,9 +6,13 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @return
@@ -20,6 +24,8 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = "classpath:application-es.properties")
 public class EsConfig {
+    @Value("${elasticsearch.httpHosts}")
+    private String httpHosts;
 
     /**
      * @return org.elasticsearch.client.RestClient
@@ -30,8 +36,12 @@ public class EsConfig {
      **/
     @Bean
     public RestClient restClient() {
+        List<HttpHost> httpHostList = new ArrayList<>();
+        for (String httpHost : httpHosts.split(",")) {
+            httpHostList.add(new HttpHost(httpHost.split(":")[0], Integer.parseInt(httpHost.split(":")[1])));
+        }
         RestClient restClient = RestClient.builder(
-                new HttpHost("192.168.44.109", 9200)
+                httpHostList.toArray(new HttpHost[httpHostList.size()])
         ).build();
         return restClient;
     }
