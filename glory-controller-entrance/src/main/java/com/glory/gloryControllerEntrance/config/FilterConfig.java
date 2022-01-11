@@ -1,6 +1,7 @@
 package com.glory.gloryControllerEntrance.config;
 
 import com.glory.gloryControllerEntrance.filter.logFilter.LogFilter;
+import com.glory.gloryControllerEntrance.filter.mdcFilter.MdcFilter;
 import com.glory.gloryControllerEntrance.filter.xssFilter.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,12 @@ public class FilterConfig {
     }
 
     @Bean
+    public Filter mdcFilter() {
+        return new MdcFilter();
+    }
+
+
+    @Bean
     public FilterRegistrationBean filterRegistrationBean20() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(xssFilter());
@@ -39,6 +46,13 @@ public class FilterConfig {
         return filterRegistrationBean;
     }
 
-
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean10() {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(mdcFilter());
+        filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.setOrder(21);//order的数值越小 则优先级越高
+        return filterRegistrationBean;
+    }
 }
 

@@ -20,6 +20,8 @@ public class MainController {
     public String star(HttpServletRequest request) {
         String ip = HttpUtil.getRemoteAddr(request);
         String ipAddress = MonipdbUtils.ip2Address(ip);
-        return "project successful startup；your ip is " + ip + " " + ipAddress;
+        String result = String.format("project successful startup；your ip is %s %s", ip, ipAddress);
+        log.info(result);
+        return result;
     }
 }

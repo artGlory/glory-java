@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glory.gloryUtils.constants.SysConstants;
 import com.glory.gloryUtils.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -69,14 +70,16 @@ public class LogFilter implements Filter {
             case 0:
                 break;
             case 1:
-                log.info("[请求参数][IP:" + requestMap.get("IP") + "][UUID:" + requestMap.get("UUID") + "] "
-                        + new ObjectMapper().writeValueAsString(requestMap));
+                log.info("[请求参数][IP:{}][UUID:{}] {}",
+                        requestMap.get("IP"), requestMap.get("IP"),
+                        new ObjectMapper().writeValueAsString(requestMap));
                 break;
             case 2:
                 if (httpServletResponse.getHeader(SysConstants.success_response) != null
                         && httpServletResponse.getHeader(SysConstants.success_response).equals("false")) {
-                    log.info("[请求参数][IP:" + requestMap.get("IP") + "][UUID:" + requestMap.get("UUID") + "] "
-                            + new ObjectMapper().writeValueAsString(requestMap));
+                    log.info("[请求参数][IP:{}][UUID:{}] {}",
+                            requestMap.get("IP"), requestMap.get("IP"),
+                            new ObjectMapper().writeValueAsString(requestMap));
                 }
                 break;
             default:
