@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  *
  */
-public class EfidTool {
+public class RfidTool {
     private static Socket device_client = null;
     private static OutputStream device_client_output_stream = null;
     private static InputStream device_client_input_stream = null;

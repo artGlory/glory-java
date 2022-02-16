@@ -10,7 +10,7 @@ services:
       - "./mysql/init:/docker-entrypoint-initdb.d/"
     environment:
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: 'glory'
+      MYSQL_DATABASE: 'glory_mix_db'
       MYSQL_USER: 'glory_root'
       MYSQL_PASSWORD: 'glory_password'
     ports:

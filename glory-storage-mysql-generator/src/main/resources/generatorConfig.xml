@@ -45,15 +45,15 @@
 
         <!--po地址-->
         <javaModelGenerator targetPackage="com.glory.gloryStorageMysql.entity"
-                            targetProject="glory-storage-mysql/src/main/java"/>
+                            targetProject="./glory-java/glory-storage-mysql/src/main/java"/>
         <!--XML-->
         <sqlMapGenerator targetPackage="mapper"
-                         targetProject="glory-storage-mysql/src/main/resources/"/>
+                         targetProject="./glory-java/glory-storage-mysql/src/main/resources/"/>
         <!--mapper-->
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.glory.gloryStorageMysql.dao"
-                             targetProject="glory-storage-mysql/src/main/java/"/>
+                             targetProject="./glory-java/glory-storage-mysql/src/main/java/"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="bis_customer_opt">
+        <table tableName="basic_role_privilege_relation">
         </table>
     </context>
 </generatorConfiguration>

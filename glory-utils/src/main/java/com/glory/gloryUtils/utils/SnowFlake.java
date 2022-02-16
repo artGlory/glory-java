@@ -202,7 +202,12 @@ public class SnowFlake {
         System.err.println(System.currentTimeMillis());
         System.err.println(new Moment().toFullTime());
         System.out.println("数据表ID：" + SnowFlake.getInstance().toLong19());
-        System.out.println("UUID：" + UUID.randomUUID().toString().replaceAll("-","")+" 长度："+UUID.randomUUID().toString().length());
+        String uuid = UUID.randomUUID().toString();
+        System.err.println(uuid);
+        System.err.println(uuid.length());
+        uuid = uuid.replaceAll("-", "");
+        System.err.println(uuid);
+        System.err.println(uuid.length());
 
     }
 }
