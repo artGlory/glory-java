@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.glory.gloryStorageMysql.mapper.BasicRelationResourceMapper">
+  <resultMap id="BaseResultMap" type="com.glory.gloryStorageMysql.entity.BasicRelationResource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="uk" jdbcType="VARCHAR" property="uk" />
+    <result column="resource_type" jdbcType="VARCHAR" property="resourceType" />
+    <result column="own_table_name" jdbcType="VARCHAR" property="ownTableName" />
+    <result column="own_table_key" jdbcType="VARCHAR" property="ownTableKey" />
+    <result column="own_table_value" jdbcType="VARCHAR" property="ownTableValue" />
+    <result column="resource_table_name" jdbcType="VARCHAR" property="resourceTableName" />
+    <result column="resource_table_key" jdbcType="VARCHAR" property="resourceTableKey" />
+    <result column="resource_table_value" jdbcType="VARCHAR" property="resourceTableValue" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account_uk" jdbcType="VARCHAR" property="createAccountUk" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account_uk" jdbcType="VARCHAR" property="updateAccountUk" />
+  </resultMap>
+</mapper>
