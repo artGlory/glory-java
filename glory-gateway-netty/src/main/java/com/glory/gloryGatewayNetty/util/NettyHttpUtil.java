@@ -57,7 +57,7 @@ public class NettyHttpUtil {
                                 System.err.println(msg.content().toString(CharsetUtil.UTF_8));
                                 // 创建http响应
                                 String responseStr="返回信息";
-                                FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,HttpResponseStatus.OK
+                                    FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,HttpResponseStatus.OK
                                         , Unpooled.copiedBuffer((CharSequence) responseStr, CharsetUtil.UTF_8));
                                 // 设置头信息
                                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");

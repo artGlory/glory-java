@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: eureka-server
+  security:
+    user:
+      name: "eurekaAdmin"
+      password: "eurekaAdmin"
+server:
+  port: 48080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: shutdown
+  endpoint:
+    health:
+      show-details: ALWAYS
+eureka:
+  instance:
+    appname: ${spring.application.name}
+    instanceId: ${eureka.instance.ipAddress}:${server.port}
+    preferIpAddress: true  # 客户端在注册时使用自己的IP而不是主机名，缺省：false
+    ipAddress: 192.168.31.20   # 指定此实例的ip #多网卡的时候，选择一个指定网卡
+    leaseRenewalIntervalInSeconds: 3 #实例续约间隔时间
+    leaseExpirationDurationInSeconds: 15 #实例超时时间，表示最大leaseExpirationDurationInSeconds秒后没有续约，Server就认为他不可用了，随之就会将其剔除。
+    metadataMap:  ## 注册给eureka的时候告诉eureka自己的密码
+      "user.name": ${spring.security.user.name}
+      "user.password": ${spring.security.user.password}
+  client:
+    registerWithEureka: true #是否向服务注册中心注册自己
+    fetchRegistry: true #是否检索服务
+    serviceUrl: #服务注册中心的配置内容，指定服务注册中心的位置
+      defaultZone: http://eurekaAdmin:eurekaAdmin@192.168.31.20:48080/eureka/,http://eurekaAdmin:eurekaAdmin@192.168.31.20:48081/eureka/,http://eurekaAdmin:eurekaAdmin@192.168.31.20:48082/eureka/
+  server:
+    evictionIntervalTimerInMs: 15000   #剔除失效服务间隔时间
+    enableSelfPreservation: true       #是否开启自我保护（生产环境打开自我保护，开发环境关闭自我保护） #如果在15分钟内超过85%的客户端节点都没有正常的心跳，那么Eureka就认为客户端与注册中心出现了网络故障，Eureka Server自动进入自我保护机制，
